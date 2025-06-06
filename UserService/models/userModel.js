@@ -48,4 +48,16 @@ const deleteUser = (userId, callback) => {
   });
 };
 
-module.exports = { getUserById, addUser, updateUser, deleteUser };
+// Fungsi untuk mendapatkan semua user
+const getAllUsers = (callback) => {
+  const query = `SELECT * FROM users`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error retrieving users:", err);
+      return callback(err, null);
+    }
+    callback(null, results);
+  });
+};
+
+module.exports = { getUserById, addUser, updateUser, deleteUser, getAllUsers };

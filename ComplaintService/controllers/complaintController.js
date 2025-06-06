@@ -30,12 +30,10 @@ const addComplaint = (req, res) => {
           .status(500)
           .json({ message: "Error adding complaint", error: err });
       }
-      res
-        .status(201)
-        .json({
-          message: "Complaint added successfully",
-          complaintId: results.insertId,
-        });
+      res.status(201).json({
+        message: "Complaint added successfully",
+        complaintId: results.insertId,
+      });
     }
   );
 };
@@ -50,6 +48,9 @@ const updateComplaint = (req, res) => {
         .status(500)
         .json({ message: "Error updating complaint", error: err });
     }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Complaint not found" });
+    }
     res.status(200).json({ message: "Complaint updated successfully" });
   });
 };
@@ -63,7 +64,35 @@ const deleteComplaint = (req, res) => {
         .status(500)
         .json({ message: "Error deleting complaint", error: err });
     }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ message: "Complaint not found" });
+    }
     res.status(200).json({ message: "Complaint deleted successfully" });
+  });
+};
+
+// Fungsi untuk mendapatkan semua keluhan
+const getAllComplaints = (req, res) => {
+  complaintModel.getAllComplaints((err, complaints) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Error retrieving complaints", error: err });
+    }
+    res.status(200).json(complaints);
+  });
+};
+
+// Fungsi untuk mendapatkan keluhan berdasarkan user ID
+const getComplaintsByUserId = (req, res) => {
+  const userId = req.params.userId;
+  complaintModel.getComplaintsByUserId(userId, (err, complaints) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Error retrieving complaints", error: err });
+    }
+    res.status(200).json(complaints);
   });
 };
 
@@ -72,4 +101,6 @@ module.exports = {
   addComplaint,
   updateComplaint,
   deleteComplaint,
+  getAllComplaints,
+  getComplaintsByUserId,
 };

@@ -31,12 +31,10 @@ const addProduct = (req, res) => {
           .status(500)
           .json({ message: "Error adding product", error: err });
       }
-      res
-        .status(201)
-        .json({
-          message: "Product added successfully",
-          productId: results.insertId,
-        });
+      res.status(201).json({
+        message: "Product added successfully",
+        productId: results.insertId,
+      });
     }
   );
 };
@@ -75,5 +73,24 @@ const deleteProduct = (req, res) => {
     res.status(200).json({ message: "Product deleted successfully" });
   });
 };
+// ...existing code...
 
-module.exports = { getProductById, addProduct, updateProduct, deleteProduct };
+// Fungsi untuk mendapatkan semua produk
+const getAllProducts = (req, res) => {
+  productModel.getAllProducts((err, products) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Error retrieving products", error: err });
+    }
+    res.status(200).json(products);
+  });
+};
+
+module.exports = {
+  getProductById,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  getAllProducts,
+};

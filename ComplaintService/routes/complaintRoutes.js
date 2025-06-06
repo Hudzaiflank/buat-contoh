@@ -2,6 +2,12 @@ const express = require("express");
 const router = express.Router();
 const complaintController = require("../controllers/complaintController");
 
+// Endpoint untuk mendapatkan semua keluhan
+router.get("/", complaintController.getAllComplaints);
+
+// Endpoint untuk mendapatkan keluhan berdasarkan user ID
+router.get("/user/:userId", complaintController.getComplaintsByUserId);
+
 // Endpoint untuk mendapatkan keluhan berdasarkan ID
 router.get("/:id", complaintController.getComplaintById);
 

@@ -56,4 +56,16 @@ const deleteUser = (req, res) => {
   });
 };
 
-module.exports = { getUserById, addUser, updateUser, deleteUser };
+// Fungsi untuk mendapatkan semua user
+const getAllUsers = (req, res) => {
+  userModel.getAllUsers((err, users) => {
+    if (err) {
+      return res
+        .status(500)
+        .json({ message: "Error retrieving users", error: err });
+    }
+    res.status(200).json(users);
+  });
+};
+
+module.exports = { getUserById, addUser, updateUser, deleteUser, getAllUsers };

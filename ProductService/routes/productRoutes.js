@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const productController = require("../controllers/productController");
 
+// Endpoint untuk mendapatkan semua produk
+router.get("/", productController.getAllProducts);
+
 // Endpoint untuk mendapatkan produk berdasarkan ID
 router.get("/:id", productController.getProductById);
 

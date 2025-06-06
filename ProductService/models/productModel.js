@@ -63,5 +63,24 @@ const deleteProduct = (productId, callback) => {
     callback(null, results);
   });
 };
+// ...existing code...
 
-module.exports = { getProductById, addProduct, updateProduct, deleteProduct };
+// Fungsi untuk mendapatkan semua produk
+const getAllProducts = (callback) => {
+  const query = `SELECT * FROM products`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error retrieving products:", err);
+      return callback(err, null);
+    }
+    callback(null, results);
+  });
+};
+
+module.exports = {
+  getProductById,
+  addProduct,
+  updateProduct,
+  deleteProduct,
+  getAllProducts,
+};

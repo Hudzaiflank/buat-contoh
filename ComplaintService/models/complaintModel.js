@@ -52,9 +52,35 @@ const deleteComplaint = (complaintId, callback) => {
   });
 };
 
+// Fungsi untuk mendapatkan semua keluhan
+const getAllComplaints = (callback) => {
+  const query = `SELECT * FROM complaints`;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Error retrieving complaints:", err);
+      return callback(err, null);
+    }
+    callback(null, results);
+  });
+};
+
+// Fungsi untuk mendapatkan keluhan berdasarkan user ID
+const getComplaintsByUserId = (userId, callback) => {
+  const query = `SELECT * FROM complaints WHERE user_id = ?`;
+  db.query(query, [userId], (err, results) => {
+    if (err) {
+      console.error("Error retrieving complaints by user ID:", err);
+      return callback(err, null);
+    }
+    callback(null, results);
+  });
+};
+
 module.exports = {
   getComplaintById,
   addComplaint,
   updateComplaint,
   deleteComplaint,
+  getAllComplaints,
+  getComplaintsByUserId,
 };

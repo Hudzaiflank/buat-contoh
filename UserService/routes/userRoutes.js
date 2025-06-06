@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 
+// Endpoint untuk mendapatkan semua user
+router.get("/", userController.getAllUsers);
+
 // Endpoint untuk mendapatkan user berdasarkan ID
 router.get("/:id", userController.getUserById);
 
