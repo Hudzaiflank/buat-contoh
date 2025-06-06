@@ -1,328 +1,283 @@
-# Dokumentasi API - Sistem Manajemen Keluhan
+# 🛠️ Final Project: Microservices System with RESTful API
 
-## Overview
+## 📁 Folder Structure
 
-Dokumentasi API untuk mengelola order, notifikasi, produk, user, dan keluhan pada sistem manajemen keluhan.
-
-Semua endpoint menerima dan merespon dengan format **JSON**.
-
-Pastikan semua body request dikirim dengan header:
-
-```http
-Content-Type: application/json
+```
+.
+├── client/                   # React + Vite + Tailwind frontend
+├── UserService/             # Service: Users (port 3001)
+├── ProductService/          # Service: Products (port 3002)
+├── ComplaintService/        # Service: Complaints (port 3003)
+├── NotificationService/     # Service: Notifications (port 3004)
+├── OrderService/            # Service: Orders (port 3005)
+├── start/                   # Runner script for all services
+├── db.sql                   # SQL dump file
+├── README.md                # This file
+└── Instruksi Pengerjaan Proyek.pdf
 ```
 
-Detail error akan disediakan sesuai dengan jenis kesalahan server.
+---
 
-Untuk keamanan, pastikan semua endpoint yang memerlukan autentikasi dilindungi dengan token atau mekanisme autentikasi lain (detail implementasi autentikasi tidak tercakup dalam dokumentasi ini).
+## ⚙️ Installation & Running
+
+### 🔹 Manual Per Service
+
+#### ▶️ UserService
+```bash
+cd UserService
+npm install
+```
+
+#### ▶️ ProductService
+```bash
+cd ProductService
+npm install
+```
+
+#### ▶️ ComplaintService
+```bash
+cd ComplaintService
+npm install
+```
+
+#### ▶️ NotificationService
+```bash
+cd NotificationService
+npm install
+```
+
+#### ▶️ OrderService
+```bash
+cd OrderService
+npm install
+```
+
+### 🔹 Global Runner (After each services been installed, run on this folder)
+```bash
+cd start
+npm install
+node start-services.js
+```
+
+### 🔹 Frontend
+```bash
+cd client
+npm install
+npm run dev
+# Opens at http://localhost:5173
+```
 
 ---
 
-## Ringkasan Routes
+## 📚 API Documentation with JSON
 
-| Resource | Method | Endpoint | Deskripsi |
-|:---|:---|:---|:---|
-| Order | GET | `/orders/:id` | Mengambil data order berdasarkan ID |
-| Order | POST | `/orders/` | Menambahkan order baru |
-| Notification | GET | `/notifications/:id` | Mengambil notifikasi berdasarkan ID |
-| Notification | POST | `/notifications/` | Menambahkan notifikasi baru |
-| Product | GET | `/products/:id` | Mengambil data produk berdasarkan ID |
-| Product | POST | `/products/` | Menambahkan produk baru |
-| Product | PUT | `/products/:id` | Memperbarui data produk berdasarkan ID |
-| Product | DELETE | `/products/:id` | Menghapus produk berdasarkan ID |
-| User | GET | `/users/:id` | Mengambil data user berdasarkan ID |
-| User | POST | `/users/` | Menambahkan user baru |
-| User | PUT | `/users/:id` | Memperbarui data user berdasarkan ID |
-| User | DELETE | `/users/:id` | Menghapus user berdasarkan ID |
-| Complaint | GET | `/complaints/:id` | Mengambil keluhan berdasarkan ID |
-| Complaint | POST | `/complaints/` | Menambahkan keluhan baru |
-| Complaint | PUT | `/complaints/:id` | Memperbarui status keluhan |
-| Complaint | DELETE | `/complaints/:id` | Menghapus keluhan berdasarkan ID |
+### ✅ User Service (`http://localhost:3001/users`)
 
----
+#### `GET /` & `GET /:id`
+_Response:_
+```json
+{
+  "user_id": 1,
+  "name": "Budi",
+  "email": "budi@example.com",
+  "password": "password123"
+}
+```
 
-## Detail API
+#### `POST /`
+_Body:_
+```json
+{
+  "name": "Budi",
+  "email": "budi@example.com",
+  "password": "password123"
+}
+```
+_Response:_
+```json
+{
+  "message": "User added successfully",
+  "userId": 13
+}
+```
 
-### 1. Order API
+#### `PUT /:id`
+_Body:_
+```json
+{
+  "name": "Updated Name",
+  "email": "updated@example.com"
+}
+```
+_Response:_
+```json
+{
+  "message": "User updated successfully"
+}
+```
 
-#### GET `/orders/:id`
-- **Deskripsi:** Mengambil data order berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib): ID dari order
-- **Response:**
-  - `200 OK`
-    ```json
-    {
-      "order_id": 1,
-      "user_id": 2,
-      "product_id": 3,
-      "request_type": "purchase",
-      "status": "pending"
-    }
-    ```
-  - `404 Not Found`
-    ```json
-    { "message": "Order not found" }
-    ```
-  - `500 Internal Server Error`
-    ```json
-    { "message": "Error retrieving order", "error": "details" }
-    ```
-
-#### POST `/orders/`
-- **Deskripsi:** Menambahkan order baru.
-- **Body Parameter:**
-  - `userId` (Integer, Wajib)
-  - `productId` (Integer, Wajib)
-  - `requestType` (String, Wajib)
-  - `status` (String, Wajib)
-- **Response:**
-  - `201 Created`
-    ```json
-    { "message": "Order added successfully", "orderId": 1 }
-    ```
-  - `500 Internal Server Error`
-    ```json
-    { "message": "Error adding order", "error": "details" }
-    ```
+#### `DELETE /:id`
+```json
+{
+  "message": "User deleted successfully"
+}
+```
 
 ---
 
-### 2. Notification API
+### ✅ Product Service (`http://localhost:3002/products`)
 
-#### GET `/notifications/:id`
-- **Deskripsi:** Mengambil notifikasi berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Response:**
-  - `200 OK`
-    ```json
-    {
-      "notification_id": 1,
-      "user_id": 2,
-      "complaint_id": 3,
-      "message": "New update available",
-      "status": "unread"
-    }
-    ```
-  - `404 Not Found`
-  - `500 Internal Server Error`
+#### `POST /`
+_Body:_
+```json
+{
+  "name": "Jalan Raya",
+  "type": "Jalan",
+  "location": "Jakarta",
+  "status": "Rusak",
+  "description": "Jalan banyak berlubang"
+}
+```
+_Response:_
+```json
+{
+  "message": "Product added successfully",
+  "productId": 5
+}
+```
 
-#### POST `/notifications/`
-- **Deskripsi:** Menambahkan notifikasi baru.
-- **Body Parameter:**
-  - `userId` (Integer, Wajib)
-  - `complaintId` (Integer, Wajib)
-  - `message` (String, Wajib)
-  - `status` (String, Wajib)
-- **Response:**
-  - `201 Created`
-  - `500 Internal Server Error`
-
----
-
-### 3. Product API
-
-#### GET `/products/:id`
-- **Deskripsi:** Mengambil data produk berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Response:**
-  - `200 OK`
-    ```json
-    {
-      "product_id": 1,
-      "name": "Product Name",
-      "type": "Electronics",
-      "location": "Warehouse A",
-      "status": "available",
-      "description": "A high quality product"
-    }
-    ```
-  - `404 Not Found`
-  - `500 Internal Server Error`
-
-#### POST `/products/`
-- **Deskripsi:** Menambahkan produk baru.
-- **Body Parameter:**
-  - `name` (String, Wajib)
-  - `type` (String, Wajib)
-  - `location` (String, Wajib)
-  - `status` (String, Wajib)
-  - `description` (String, Wajib)
-- **Response:**
-  - `201 Created`
-  - `500 Internal Server Error`
-
-#### PUT `/products/:id`
-- **Deskripsi:** Memperbarui data produk berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Body Field (Opsional):** `name`, `type`, `location`, `status`, `description`
-- **Response:**
-  - `200 OK`
-  - `500 Internal Server Error`
-
-#### DELETE `/products/:id`
-- **Deskripsi:** Menghapus produk berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Response:**
-  - `200 OK`
-  - `500 Internal Server Error`
+#### `PUT /:id`
+_Body:_
+```json
+{
+  "name": "Updated Name",
+  "type": "Taman",
+  "location": "Bandung",
+  "status": "Baik",
+  "description": "Taman diperbarui"
+}
+```
+_Response:_
+```json
+{
+  "message": "Product updated successfully"
+}
+```
 
 ---
 
-### 4. User API
+### ✅ Complaint Service (`http://localhost:3003/complaints`)
 
-#### GET `/users/:id`
-- **Deskripsi:** Mengambil data user berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Response:**
-  - `200 OK`
-    ```json
-    {
-      "user_id": 1,
-      "name": "John Doe",
-      "email": "john@example.com"
-    }
-    ```
-  - `404 Not Found`
-  - `500 Internal Server Error`
+#### `POST /`
+_Body:_
+```json
+{
+  "userId": 1,
+  "productId": 2,
+  "complaintText": "Jalan rusak",
+  "status": "Pending"
+}
+```
+_Response:_
+```json
+{
+  "message": "Complaint added successfully",
+  "complaintId": 7
+}
+```
 
-#### POST `/users/`
-- **Deskripsi:** Menambahkan user baru.
-- **Body Parameter:**
-  - `name` (String, Wajib)
-  - `email` (String, Wajib)
-  - `password` (String, Wajib)
-- **Response:**
-  - `201 Created`
-  - `500 Internal Server Error`
-
-#### PUT `/users/:id`
-- **Deskripsi:** Memperbarui data user berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Body Field (Opsional):** `name`, `email`
-- **Response:**
-  - `200 OK`
-  - `500 Internal Server Error`
-
-#### DELETE `/users/:id`
-- **Deskripsi:** Menghapus user berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Response:**
-  - `200 OK`
-  - `500 Internal Server Error`
+#### `PUT /:id`
+_Body:_
+```json
+{
+  "status": "Resolved"
+}
+```
+_Response:_
+```json
+{
+  "message": "Complaint updated successfully"
+}
+```
 
 ---
 
-### 5. Complaint API
+### ✅ Notification Service (`http://localhost:3004/notifications`)
 
-#### GET `/complaints/:id`
-- **Deskripsi:** Mengambil keluhan berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Response:**
-  - `200 OK`
-    ```json
-    {
-      "complaint_id": 1,
-      "user_id": 123,
-      "product_id": 456,
-      "complaint_text": "Product was damaged during shipping",
-      "status": "pending"
-    }
-    ```
-  - `404 Not Found`
-  - `500 Internal Server Error`
+#### `POST /`
+_Body:_
+```json
+{
+  "userId": 1,
+  "complaintId": 2,
+  "message": "Keluhan Anda diproses",
+  "status": "Sent"
+}
+```
+_Response:_
+```json
+{
+  "message": "Notification added successfully",
+  "notificationId": 6
+}
+```
 
-#### POST `/complaints/`
-- **Deskripsi:** Menambahkan keluhan baru.
-- **Body Parameter:**
-  - `userId` (Integer, Wajib)
-  - `productId` (Integer, Wajib)
-  - `complaintText` (String, Wajib)
-  - `status` (String, Wajib)
-- **Response:**
-  - `201 Created`
-  - `500 Internal Server Error`
-
-#### PUT `/complaints/:id`
-- **Deskripsi:** Memperbarui status keluhan berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Body Parameter:**
-  - `status` (String, Wajib)
-- **Response:**
-  - `200 OK`
-  - `500 Internal Server Error`
-
-#### DELETE `/complaints/:id`
-- **Deskripsi:** Menghapus keluhan berdasarkan ID.
-- **Parameter:**
-  - `id` (URL, Integer, Wajib)
-- **Response:**
-  - `200 OK`
-  - `500 Internal Server Error`
+#### `PUT /:id`
+_Body:_
+```json
+{
+  "userId": 1,
+  "complaintId": 2,
+  "message": "Updated message",
+  "status": "Pending"
+}
+```
+_Response:_
+```json
+{
+  "message": "Notification updated successfully"
+}
+```
 
 ---
 
-## Model Data
+### ✅ Order Service (`http://localhost:3005/orders`)
 
-### Complaint
-| Field | Tipe Data | Deskripsi |
-|:------|:-----|:------------|
-| complaint_id | Integer | ID unik untuk keluhan |
-| user_id | Integer | ID dari user penyampai keluhan |
-| product_id | Integer | ID dari produk yang dikeluhkan |
-| complaint_text | String | Deskripsi detail keluhan |
-| status | String | Status keluhan (pending, in progress, resolved) |
+#### `POST /`
+_Body:_
+```json
+{
+  "userId": 1,
+  "productId": 2,
+  "requestType": "Perbaikan Mendesak",
+  "status": "Pending"
+}
+```
+_Response:_
+```json
+{
+  "message": "Order added successfully",
+  "orderId": 6
+}
+```
 
-### Order
-| Field | Tipe Data | Deskripsi |
-|:------|:-----|:------------|
-| order_id | Integer | ID unik untuk order |
-| user_id | Integer | ID user pembuat order |
-| product_id | Integer | ID produk yang diorder |
-| request_type | String | Tipe request (purchase, rent) |
-| status | String | Status order |
-
-### Notification
-| Field | Tipe Data | Deskripsi |
-|:------|:-----|:------------|
-| notification_id | Integer | ID unik untuk notifikasi |
-| user_id | Integer | ID user penerima notifikasi |
-| complaint_id | Integer | ID keluhan terkait (jika ada) |
-| message | String | Isi pesan notifikasi |
-| status | String | Status notifikasi (unread, read) |
-
-### Product
-| Field | Tipe Data | Deskripsi |
-|:------|:-----|:------------|
-| product_id | Integer | ID unik untuk produk |
-| name | String | Nama produk |
-| type | String | Tipe/kategori produk |
-| location | String | Lokasi penyimpanan |
-| status | String | Status produk |
-| description | String | Deskripsi detail produk |
-
-### User
-| Field | Tipe Data | Deskripsi |
-|:------|:-----|:------------|
-| user_id | Integer | ID unik user |
-| name | String | Nama lengkap user |
-| email | String | Email user |
-| password | String | Password terenkripsi (tidak dikembalikan pada respons API) |
+#### `PUT /:id`
+_Body:_
+```json
+{
+  "userId": 1,
+  "productId": 2,
+  "requestType": "Pemeliharaan",
+  "status": "Resolved"
+}
+```
+_Response:_
+```json
+{
+  "message": "Order updated successfully"
+}
+```
 
 ---
 
-## Catatan
-
-- Semua request dan response menggunakan format **JSON**.
-- Header `Content-Type: application/json` wajib digunakan.
-- Respons error akan mengandung pesan error yang membantu.
-- Untuk keamanan, gunakan mekanisme autentikasi pada endpoint yang diperlukan.
+© 2025 - Final Project Microservices System
