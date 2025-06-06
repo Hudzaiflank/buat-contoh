@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
 const notificationRoutes = require("./routes/notificationRoutes");
+const cors = require("cors");
 
+app.use(cors());
 app.use(express.json()); // Middleware untuk parsing JSON
 
 // Route untuk NotificationService
