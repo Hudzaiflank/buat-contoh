@@ -9,11 +9,13 @@ import Swal from "sweetalert2";
 interface Props {
   selectedProductId: number | null;
   setSelectedProductId: (id: number | null) => void;
+  onProductChange: () => void;
 }
 
 export default function ProductForm({
   selectedProductId,
   setSelectedProductId,
+  onProductChange,
 }: Props) {
   const [form, setForm] = useState({
     name: "",
@@ -61,7 +63,7 @@ export default function ProductForm({
         description: "",
       });
       setSelectedProductId(null);
-      window.location.reload();
+      onProductChange(); // ganti window reload
     } catch (err) {
       Swal.fire("Error", "Operation failed", "error");
     }

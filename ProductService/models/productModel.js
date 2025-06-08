@@ -1,86 +1,82 @@
 const db = require("../config/db");
 
-// Fungsi untuk mendapatkan data produk berdasarkan ID
-const getProductById = (productId, callback) => {
-  const query = `SELECT * FROM products WHERE product_id = ?`;
-  db.query(query, [productId], (err, results) => {
-    if (err) {
-      console.error("Error retrieving product:", err);
-      return callback(err, null);
-    }
-    callback(null, results[0]);
+const getAllProducts = () => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM products", (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
   });
 };
 
-// Fungsi untuk menambahkan produk baru
-const addProduct = (name, type, location, status, description, callback) => {
-  const query = `INSERT INTO products (name, type, location, status, description) VALUES (?, ?, ?, ?, ?)`;
-  db.query(
-    query,
-    [name, type, location, status, description],
-    (err, results) => {
-      if (err) {
-        console.error("Error inserting product:", err);
-        return callback(err, null);
+const getProductById = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "SELECT * FROM products WHERE product_id = ?",
+      [id],
+      (err, results) => {
+        if (err) reject(err);
+        else resolve(results[0]);
       }
-      callback(null, results);
-    }
-  );
-};
-
-// Fungsi untuk memperbarui produk
-const updateProduct = (
-  productId,
-  name,
-  type,
-  location,
-  status,
-  description,
-  callback
-) => {
-  const query = `UPDATE products SET name = ?, type = ?, location = ?, status = ?, description = ? WHERE product_id = ?`;
-  db.query(
-    query,
-    [name, type, location, status, description, productId],
-    (err, results) => {
-      if (err) {
-        console.error("Error updating product:", err);
-        return callback(err, null);
-      }
-      callback(null, results);
-    }
-  );
-};
-
-// Fungsi untuk menghapus produk
-const deleteProduct = (productId, callback) => {
-  const query = `DELETE FROM products WHERE product_id = ?`;
-  db.query(query, [productId], (err, results) => {
-    if (err) {
-      console.error("Error deleting product:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
+    );
   });
 };
-// ...existing code...
 
-// Fungsi untuk mendapatkan semua produk
-const getAllProducts = (callback) => {
-  const query = `SELECT * FROM products`;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error retrieving products:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
+const addProduct = (name, type, location, status, description) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "INSERT INTO products (name, type, location, status, description) VALUES (?, ?, ?, ?, ?)",
+      [name, type, location, status, description],
+      (err, results) => {
+        if (err) reject(err);
+        else
+          resolve({
+            product_id: results.insertId,
+            name,
+            type,
+            location,
+            status,
+            description,
+          });
+      }
+    );
+  });
+};
+
+const updateProduct = (id, name, type, location, status, description) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "UPDATE products SET name = ?, type = ?, location = ?, status = ?, description = ? WHERE product_id = ?",
+      [name, type, location, status, description, id],
+      (err) => {
+        if (err) reject(err);
+        else
+          resolve({
+            product_id: id,
+            name,
+            type,
+            location,
+            status,
+            description,
+          });
+      }
+    );
+  });
+};
+
+const deleteProduct = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query("DELETE FROM products WHERE product_id = ?", [id], (err) => {
+      if (err) reject(err);
+      else resolve({ success: true });
+    });
   });
 };
 
 module.exports = {
+  getAllProducts,
   getProductById,
   addProduct,
   updateProduct,
   deleteProduct,
-  getAllProducts,
 };

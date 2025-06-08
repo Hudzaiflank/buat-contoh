@@ -1,4 +1,3 @@
-// src/pages/Products/ProductTable.tsx
 import { useEffect, useState } from "react";
 import { getAllProducts, deleteProduct } from "../../services/productService";
 import Swal from "sweetalert2";
@@ -6,9 +5,13 @@ import ActionButton from "../../components/common/ActionButton";
 
 type Props = {
   setSelectedProductId: (id: number) => void;
+  refreshTrigger: number;
 };
 
-export default function ProductTable({ setSelectedProductId }: Props) {
+export default function ProductTable({
+  setSelectedProductId,
+  refreshTrigger,
+}: Props) {
   const [products, setProducts] = useState([]);
 
   const fetchProducts = async () => {
@@ -22,7 +25,7 @@ export default function ProductTable({ setSelectedProductId }: Props) {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleDelete = async (id: number) => {
     const confirm = await Swal.fire({

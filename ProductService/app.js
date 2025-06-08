@@ -1,14 +1,27 @@
 const express = require("express");
-const app = express();
-const productRoutes = require("./routes/productRoutes");
+const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 
-app.use(cors());
-app.use(express.json()); // Middleware untuk parsing JSON
+const productSchema = require("./graphql/schemas/productSchema");
+const productResolvers = require("./graphql/resolvers/productResolvers");
 
-// Route untuk ProductService
-app.use("/products", productRoutes);
+const startServer = async () => {
+  const app = express();
+  app.use(cors());
 
-app.listen(3002, () => {
-  console.log("ProductService is running on http://localhost:3002");
-});
+  const server = new ApolloServer({
+    typeDefs: productSchema,
+    resolvers: productResolvers,
+  });
+
+  await server.start();
+  server.applyMiddleware({ app });
+
+  app.listen(4002, () => {
+    console.log(
+      "ProductService GraphQL running at http://localhost:4002/graphql"
+    );
+  });
+};
+
+startServer();

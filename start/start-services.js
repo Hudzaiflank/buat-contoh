@@ -2,11 +2,11 @@ const { spawn } = require("child_process");
 const path = require("path");
 
 const services = [
-  { name: "UserService", path: "../UserService", port: 3001 },
-  { name: "ProductService", path: "../ProductService", port: 3002 },
-  { name: "ComplaintService", path: "../ComplaintService", port: 3003 },
-  { name: "NotificationService", path: "../NotificationService", port: 3004 },
-  { name: "OrderService", path: "../OrderService", port: 3005 },
+  { name: "UserService", path: "../UserService", port: 4001 },
+  { name: "ProductService", path: "../ProductService", port: 4002 },
+  { name: "ComplaintService", path: "../ComplaintService", port: 4003 },
+  { name: "NotificationService", path: "../NotificationService", port: 4004 },
+  { name: "OrderService", path: "../OrderService", port: 4005 },
 ];
 
 services.forEach((service) => {

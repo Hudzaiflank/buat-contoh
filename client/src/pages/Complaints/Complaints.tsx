@@ -1,4 +1,3 @@
-// src/pages/Complaints/Complaints.tsx
 import { useState } from "react";
 import ComplaintForm from "./ComplaintForm";
 import ComplaintTable from "./ComplaintTable";
@@ -8,6 +7,8 @@ export default function Complaints() {
   const [selectedComplaintId, setSelectedComplaintId] = useState<number | null>(
     null
   );
+  const [refresh, setRefresh] = useState(0);
+  const handleRefresh = () => setRefresh((r) => r + 1);
 
   return (
     <div className="space-y-6">
@@ -15,8 +16,12 @@ export default function Complaints() {
       <ComplaintForm
         selectedComplaintId={selectedComplaintId}
         setSelectedComplaintId={setSelectedComplaintId}
+        onComplaintChange={handleRefresh}
       />
-      <ComplaintTable setSelectedComplaintId={setSelectedComplaintId} />
+      <ComplaintTable
+        setSelectedComplaintId={setSelectedComplaintId}
+        refreshTrigger={refresh}
+      />
     </div>
   );
 }

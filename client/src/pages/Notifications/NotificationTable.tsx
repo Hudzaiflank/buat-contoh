@@ -1,4 +1,3 @@
-// src/pages/Notifications/NotificationTable.tsx
 import { useEffect, useState } from "react";
 import {
   deleteNotification,
@@ -11,10 +10,12 @@ import ActionButton from "../../components/common/ActionButton";
 
 type Props = {
   setSelectedNotificationId: (id: number) => void;
+  refreshTrigger: number;
 };
 
 export default function NotificationTable({
   setSelectedNotificationId,
+  refreshTrigger,
 }: Props) {
   const [notifications, setNotifications] = useState([]);
   const [users, setUsers] = useState([]);
@@ -31,19 +32,9 @@ export default function NotificationTable({
     setComplaints(cData);
   };
 
-  const getUserName = (id: number) => {
-    const user = users.find((u: any) => u.user_id === id);
-    return user ? user.name : `User ${id}`;
-  };
-
-  const getComplaintText = (id: number) => {
-    const complaint = complaints.find((c: any) => c.complaint_id === id);
-    return complaint ? complaint.complaint_text : `Complaint ${id}`;
-  };
-
   useEffect(() => {
     loadData();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleDelete = async (id: number) => {
     const confirm = await Swal.fire({
@@ -59,6 +50,16 @@ export default function NotificationTable({
       loadData();
       Swal.fire("Deleted", "Notification deleted", "success");
     }
+  };
+
+  const getUserName = (id: number) => {
+    const user = users.find((u: any) => u.user_id === id);
+    return user ? user.name : `User ${id}`;
+  };
+
+  const getComplaintText = (id: number) => {
+    const complaint = complaints.find((c: any) => c.complaint_id === id);
+    return complaint ? complaint.complaint_text : `Complaint ${id}`;
   };
 
   return (

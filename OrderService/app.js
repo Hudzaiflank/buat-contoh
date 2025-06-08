@@ -1,14 +1,27 @@
+// app.js
 const express = require("express");
-const app = express();
-const orderRoutes = require("./routes/orderRoutes");
+const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
+const orderSchema = require("./graphql/schema/orderSchema");
+const orderResolvers = require("./graphql/resolver/orderResolver");
 
-app.use(cors());
-app.use(express.json()); // Middleware untuk parsing JSON
+const startServer = async () => {
+  const app = express();
+  app.use(cors());
 
-// Route untuk OrderService
-app.use("/orders", orderRoutes);
+  const server = new ApolloServer({
+    typeDefs: orderSchema,
+    resolvers: orderResolvers,
+  });
 
-app.listen(3005, () => {
-  console.log("OrderService is running on http://localhost:3005");
-});
+  await server.start();
+  server.applyMiddleware({ app });
+
+  app.listen(4005, () => {
+    console.log(
+      "OrderService GraphQL running at http://localhost:4005/graphql"
+    );
+  });
+};
+
+startServer();

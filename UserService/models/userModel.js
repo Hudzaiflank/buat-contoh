@@ -1,63 +1,62 @@
 const db = require("../config/db");
 
-// Fungsi untuk mendapatkan data user berdasarkan ID
-const getUserById = (userId, callback) => {
-  const query = `SELECT * FROM users WHERE user_id = ?`;
-  db.query(query, [userId], (err, results) => {
-    if (err) {
-      console.error("Error retrieving user:", err);
-      return callback(err, null);
-    }
-    callback(null, results[0]);
+const getAllUsers = () => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM users", (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
   });
 };
 
-// Fungsi untuk menambahkan user
-const addUser = (name, email, password, callback) => {
-  const query = `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`;
-  db.query(query, [name, email, password], (err, results) => {
-    if (err) {
-      console.error("Error inserting user:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
+const getUserById = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query("SELECT * FROM users WHERE user_id = ?", [id], (err, results) => {
+      if (err) reject(err);
+      else resolve(results[0]);
+    });
   });
 };
 
-// Fungsi untuk memperbarui user
-const updateUser = (userId, name, email, callback) => {
-  const query = `UPDATE users SET name = ?, email = ? WHERE user_id = ?`;
-  db.query(query, [name, email, userId], (err, results) => {
-    if (err) {
-      console.error("Error updating user:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
+const addUser = (name, email, password) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+      [name, email, password],
+      (err, results) => {
+        if (err) reject(err);
+        else resolve({ user_id: results.insertId, name, email });
+      }
+    );
   });
 };
 
-// Fungsi untuk menghapus user
-const deleteUser = (userId, callback) => {
-  const query = `DELETE FROM users WHERE user_id = ?`;
-  db.query(query, [userId], (err, results) => {
-    if (err) {
-      console.error("Error deleting user:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
+const updateUser = (id, name, email) => {
+  return new Promise((resolve, reject) => {
+    db.query(
+      "UPDATE users SET name = ?, email = ? WHERE user_id = ?",
+      [name, email, id],
+      (err, results) => {
+        if (err) reject(err);
+        else resolve({ user_id: id, name, email });
+      }
+    );
   });
 };
 
-// Fungsi untuk mendapatkan semua user
-const getAllUsers = (callback) => {
-  const query = `SELECT * FROM users`;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error retrieving users:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
+const deleteUser = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query("DELETE FROM users WHERE user_id = ?", [id], (err) => {
+      if (err) reject(err);
+      else resolve({ success: true });
+    });
   });
 };
 
-module.exports = { getUserById, addUser, updateUser, deleteUser, getAllUsers };
+module.exports = {
+  getAllUsers,
+  getUserById,
+  addUser,
+  updateUser,
+  deleteUser,
+};

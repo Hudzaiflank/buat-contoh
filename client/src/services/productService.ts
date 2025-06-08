@@ -1,15 +1,41 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_PRODUCT_SERVICE;
+const BASE_URL = import.meta.env.VITE_PRODUCT_SERVICE_GRAPHQL;
 
 export const getAllProducts = async () => {
-  const res = await axios.get(BASE_URL);
-  return res.data;
+  const res = await axios.post(BASE_URL, {
+    query: `
+      query {
+        products {
+          product_id
+          name
+          type
+          location
+          status
+          description
+        }
+      }
+    `,
+  });
+  return res.data.data.products;
 };
 
 export const getProductById = async (id: number) => {
-  const res = await axios.get(`${BASE_URL}/${id}`);
-  return res.data;
+  const res = await axios.post(BASE_URL, {
+    query: `
+      query {
+        product(id: ${id}) {
+          product_id
+          name
+          type
+          location
+          status
+          description
+        }
+      }
+    `,
+  });
+  return res.data.data.product;
 };
 
 export const addProduct = async (product: {
@@ -19,8 +45,22 @@ export const addProduct = async (product: {
   status: string;
   description: string;
 }) => {
-  const res = await axios.post(BASE_URL, product);
-  return res.data;
+  const res = await axios.post(BASE_URL, {
+    query: `
+      mutation {
+        addProduct(
+          name: "${product.name}"
+          type: "${product.type}"
+          location: "${product.location}"
+          status: "${product.status}"
+          description: "${product.description}"
+        ) {
+          product_id
+        }
+      }
+    `,
+  });
+  return res.data.data.addProduct;
 };
 
 export const updateProduct = async (
@@ -33,11 +73,34 @@ export const updateProduct = async (
     description: string;
   }
 ) => {
-  const res = await axios.put(`${BASE_URL}/${id}`, product);
-  return res.data;
+  const res = await axios.post(BASE_URL, {
+    query: `
+      mutation {
+        updateProduct(
+          id: ${id}
+          name: "${product.name}"
+          type: "${product.type}"
+          location: "${product.location}"
+          status: "${product.status}"
+          description: "${product.description}"
+        ) {
+          product_id
+        }
+      }
+    `,
+  });
+  return res.data.data.updateProduct;
 };
 
 export const deleteProduct = async (id: number) => {
-  const res = await axios.delete(`${BASE_URL}/${id}`);
-  return res.data;
+  const res = await axios.post(BASE_URL, {
+    query: `
+      mutation {
+        deleteProduct(id: ${id}) {
+          success
+        }
+      }
+    `,
+  });
+  return res.data.data.deleteProduct;
 };

@@ -1,14 +1,25 @@
 const express = require("express");
-const app = express();
-const notificationRoutes = require("./routes/notificationRoutes");
-const cors = require("cors");
+const { ApolloServer } = require("apollo-server-express");
+const notificationTypeDefs = require("./graphql/schema/notificationSchema");
+const notificationResolvers = require("./graphql/resolvers/notificationResolvers");
 
-app.use(cors());
-app.use(express.json()); // Middleware untuk parsing JSON
+async function startServer() {
+  const app = express();
 
-// Route untuk NotificationService
-app.use("/notifications", notificationRoutes);
+  const server = new ApolloServer({
+    typeDefs: notificationTypeDefs,
+    resolvers: notificationResolvers,
+  });
 
-app.listen(3004, () => {
-  console.log("NotificationService is running on http://localhost:3004");
-});
+  await server.start();
+  server.applyMiddleware({ app });
+
+  const PORT = 4004;
+  app.listen(PORT, () => {
+    console.log(
+      `🚀 NotificationService GraphQL ready at http://localhost:${PORT}${server.graphqlPath}`
+    );
+  });
+}
+
+startServer();

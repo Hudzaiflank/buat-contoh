@@ -1,4 +1,3 @@
-// src/pages/Complaints/ComplaintForm.tsx
 import { useEffect, useState } from "react";
 import {
   addComplaint,
@@ -12,11 +11,13 @@ import Swal from "sweetalert2";
 type Props = {
   selectedComplaintId: number | null;
   setSelectedComplaintId: (id: number | null) => void;
+  onComplaintChange: () => void;
 };
 
 export default function ComplaintForm({
   selectedComplaintId,
   setSelectedComplaintId,
+  onComplaintChange,
 }: Props) {
   const [userId, setUserId] = useState("");
   const [productId, setProductId] = useState("");
@@ -60,6 +61,7 @@ export default function ComplaintForm({
     setComplaintText("");
     setStatus("Pending");
     setSelectedComplaintId(null);
+    onComplaintChange(); // untuk trigger refresh
   };
 
   return (

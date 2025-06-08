@@ -7,6 +7,9 @@ export default function Products() {
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null
   );
+  const [refresh, setRefresh] = useState(0);
+
+  const handleRefresh = () => setRefresh((r) => r + 1);
 
   return (
     <div className="space-y-6">
@@ -14,8 +17,12 @@ export default function Products() {
       <ProductForm
         selectedProductId={selectedProductId}
         setSelectedProductId={setSelectedProductId}
+        onProductChange={handleRefresh}
       />
-      <ProductTable setSelectedProductId={setSelectedProductId} />
+      <ProductTable
+        setSelectedProductId={setSelectedProductId}
+        refreshTrigger={refresh}
+      />
     </div>
   );
 }

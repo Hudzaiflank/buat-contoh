@@ -1,14 +1,25 @@
 const express = require("express");
-const app = express();
-const userRoutes = require("./routes/userRoutes");
+const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 
-app.use(cors());
-app.use(express.json()); // Middleware untuk parsing JSON
+const userSchema = require("./graphql/schemas/userSchema");
+const userResolvers = require("./graphql/resolvers/userResolvers");
 
-// Route untuk UserService
-app.use("/users", userRoutes);
+const startServer = async () => {
+  const app = express();
+  app.use(cors());
 
-app.listen(3001, () => {
-  console.log("UserService is running on http://localhost:3001");
-});
+  const server = new ApolloServer({
+    typeDefs: userSchema,
+    resolvers: userResolvers,
+  });
+
+  await server.start();
+  server.applyMiddleware({ app });
+
+  app.listen(4001, () => {
+    console.log("UserService GraphQL running at http://localhost:4001/graphql");
+  });
+};
+
+startServer();

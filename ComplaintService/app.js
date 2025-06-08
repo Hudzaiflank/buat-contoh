@@ -1,14 +1,27 @@
 const express = require("express");
-const app = express();
-const complaintRoutes = require("./routes/complaintRoutes");
+const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 
-app.use(cors());
-app.use(express.json()); // Middleware untuk parsing JSON
+const complaintSchema = require("./graphql/schemas/complaintSchema");
+const complaintResolvers = require("./graphql/resolvers/complaintResolvers");
 
-// Route untuk ComplaintService
-app.use("/complaints", complaintRoutes);
+const startServer = async () => {
+  const app = express();
+  app.use(cors());
 
-app.listen(3003, () => {
-  console.log("ComplaintService is running on http://localhost:3003");
-});
+  const server = new ApolloServer({
+    typeDefs: complaintSchema,
+    resolvers: complaintResolvers,
+  });
+
+  await server.start();
+  server.applyMiddleware({ app });
+
+  app.listen(4003, () => {
+    console.log(
+      "ComplaintService GraphQL running at http://localhost:4003/graphql"
+    );
+  });
+};
+
+startServer();

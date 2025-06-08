@@ -1,4 +1,3 @@
-// src/pages/Notifications/NotificationForm.tsx
 import { useEffect, useState } from "react";
 import {
   addNotification,
@@ -12,11 +11,13 @@ import Swal from "sweetalert2";
 type Props = {
   selectedNotificationId: number | null;
   setSelectedNotificationId: (id: number | null) => void;
+  onNotificationChange: () => void;
 };
 
 export default function NotificationForm({
   selectedNotificationId,
   setSelectedNotificationId,
+  onNotificationChange,
 }: Props) {
   const [userId, setUserId] = useState("");
   const [complaintId, setComplaintId] = useState("");
@@ -65,6 +66,7 @@ export default function NotificationForm({
     setMessage("");
     setStatus("Sent");
     setSelectedNotificationId(null);
+    onNotificationChange(); // trigger refresh
   };
 
   return (
@@ -99,10 +101,10 @@ export default function NotificationForm({
 
       <input
         type="text"
-        placeholder="Message"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         className="border p-2 w-full rounded"
+        placeholder="Message"
         required
       />
 
@@ -113,7 +115,6 @@ export default function NotificationForm({
       >
         <option value="Sent">Sent</option>
         <option value="Pending">Pending</option>
-
         <option value="Resolved">Resolved</option>
       </select>
 

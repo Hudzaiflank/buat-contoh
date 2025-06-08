@@ -2,17 +2,17 @@ const mysql = require("mysql2");
 
 const db = mysql.createConnection({
   host: "localhost",
-  user: "root", // Ganti dengan user MySQL Anda
-  password: "", // Ganti dengan password MySQL Anda
-  database: "user_service_db", // Ganti nama database sesuai kebutuhan
+  user: "root",
+  password: "",
+  database: "user_service_db",
 });
 
 db.connect((err) => {
   if (err) {
-    console.error("error connecting: " + err.stack);
+    console.error("Database connection error:", err);
     return;
   }
-  console.log("connected to database");
+  console.log("Connected to MySQL (NotificationService)");
 });
 
 module.exports = db;

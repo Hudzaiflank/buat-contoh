@@ -1,4 +1,3 @@
-// src/pages/Complaints/ComplaintTable.tsx
 import { useEffect, useState } from "react";
 import {
   deleteComplaint,
@@ -11,9 +10,13 @@ import ActionButton from "../../components/common/ActionButton";
 
 type Props = {
   setSelectedComplaintId: (id: number) => void;
+  refreshTrigger: number;
 };
 
-export default function ComplaintTable({ setSelectedComplaintId }: Props) {
+export default function ComplaintTable({
+  setSelectedComplaintId,
+  refreshTrigger,
+}: Props) {
   const [complaints, setComplaints] = useState([]);
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
@@ -24,6 +27,10 @@ export default function ComplaintTable({ setSelectedComplaintId }: Props) {
       getAllUsers(),
       getAllProducts(),
     ]);
+    console.log("COMPLAINT - Complaints data from API:", cData);
+    console.log("COMPLAINT - Users data from API:", uData);
+    console.log("COMPLAINT - Products data from API:", pData);
+
     setComplaints(cData);
     setUsers(uData);
     setProducts(pData);
@@ -41,7 +48,7 @@ export default function ComplaintTable({ setSelectedComplaintId }: Props) {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [refreshTrigger]);
 
   const handleDelete = async (id: number) => {
     const confirm = await Swal.fire({
