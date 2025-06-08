@@ -2,68 +2,58 @@ version: "3.8"
 
 services:
   user-service:
-    build: ./UserService
+    image: hudzaiflank/uas:userservice
     ports:
       - "4001:4001"
-    env_file:
-      - ./UserService/.env
     depends_on:
       - central-db
     networks:
       - backend
 
   product-service:
-    build: ./ProductService
+    image: hudzaiflank/uas:productservice
     ports:
       - "4002:4002"
-    env_file:
-      - ./ProductService/.env
     depends_on:
       - central-db
     networks:
       - backend
 
   complaint-service:
-    build: ./ComplaintService
+    image: hudzaiflank/uas:complaintservice
     ports:
       - "4003:4003"
-    env_file:
-      - ./ComplaintService/.env
     depends_on:
       - central-db
     networks:
       - backend
 
   notification-service:
-    build: ./NotificationService
+    image: hudzaiflank/uas:notificationservice
     ports:
       - "4004:4004"
-    env_file:
-      - ./NotificationService/.env
     depends_on:
       - central-db
     networks:
       - backend
 
   order-service:
-    build: ./OrderService
+    image: hudzaiflank/uas:orderservice
     ports:
       - "4005:4005"
-    env_file:
-      - ./OrderService/.env
     depends_on:
       - central-db
     networks:
       - backend
 
   central-db:
-    image: hudzaiflank/db:withsql # ⬅️ Ganti image custom milikmu
+    image: hudzaiflank/db:withsql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user_service_db
     ports:
-      - "3307:3306" # ⬅️ Gunakan port host yang tidak bentrok
+      - "3307:3306"
     networks:
       - backend
 
