@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   user-service:
     build: ./UserService
@@ -56,15 +57,13 @@ services:
       - backend
 
   central-db:
-    image: mysql:8.0
+    image: hudzaiflank/db:withsql # ⬅️ Ganti image custom milikmu
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user_service_db
-    volumes:
-      - ./db.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
-      - "3307:3306" # ✅ Host pakai 3307 agar tidak bentrok dengan MySQL lokal
+      - "3307:3306" # ⬅️ Gunakan port host yang tidak bentrok
     networks:
       - backend
 
