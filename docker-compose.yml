@@ -1,0 +1,72 @@
+version: "3.8"
+services:
+  user-service:
+    build: ./UserService
+    ports:
+      - "4001:4001"
+    env_file:
+      - ./UserService/.env
+    depends_on:
+      - central-db
+    networks:
+      - backend
+
+  product-service:
+    build: ./ProductService
+    ports:
+      - "4002:4002"
+    env_file:
+      - ./ProductService/.env
+    depends_on:
+      - central-db
+    networks:
+      - backend
+
+  complaint-service:
+    build: ./ComplaintService
+    ports:
+      - "4003:4003"
+    env_file:
+      - ./ComplaintService/.env
+    depends_on:
+      - central-db
+    networks:
+      - backend
+
+  notification-service:
+    build: ./NotificationService
+    ports:
+      - "4004:4004"
+    env_file:
+      - ./NotificationService/.env
+    depends_on:
+      - central-db
+    networks:
+      - backend
+
+  order-service:
+    build: ./OrderService
+    ports:
+      - "4005:4005"
+    env_file:
+      - ./OrderService/.env
+    depends_on:
+      - central-db
+    networks:
+      - backend
+
+  central-db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user_service_db
+    volumes:
+      - ./db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3307:3306" # ✅ Host pakai 3307 agar tidak bentrok dengan MySQL lokal
+    networks:
+      - backend
+
+networks:
+  backend:

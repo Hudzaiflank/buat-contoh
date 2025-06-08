@@ -1,86 +1,65 @@
 const db = require("../config/db");
 
-// Fungsi untuk mendapatkan notifikasi berdasarkan ID
-const getNotificationById = (notificationId, callback) => {
-  const query = `SELECT * FROM notifications WHERE notification_id = ?`;
-  db.query(query, [notificationId], (err, results) => {
-    if (err) {
-      console.error("Error retrieving notification:", err);
-      return callback(err, null);
-    }
-    callback(null, results[0]);
-  });
+const getNotificationById = async (notificationId) => {
+  const [rows] = await db.query(
+    "SELECT * FROM notifications WHERE notification_id = ?",
+    [notificationId]
+  );
+  return rows[0];
 };
 
-// Fungsi untuk menambahkan notifikasi baru
-const addNotification = (userId, complaintId, message, status, callback) => {
-  const query = `INSERT INTO notifications (user_id, complaint_id, message, status) VALUES (?, ?, ?, ?)`;
-  db.query(query, [userId, complaintId, message, status], (err, results) => {
-    if (err) {
-      console.error("Error inserting notification:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
-  });
+const addNotification = async (userId, complaintId, message, status) => {
+  const [result] = await db.query(
+    "INSERT INTO notifications (user_id, complaint_id, message, status) VALUES (?, ?, ?, ?)",
+    [userId, complaintId, message, status]
+  );
+  return {
+    notification_id: result.insertId,
+    userId,
+    complaintId,
+    message,
+    status,
+  };
 };
 
-// Fungsi untuk mendapatkan semua notifikasi
-const getAllNotifications = (callback) => {
-  const query = `SELECT * FROM notifications`;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Error retrieving notifications:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
-  });
+const getAllNotifications = async () => {
+  const [rows] = await db.query("SELECT * FROM notifications");
+  return rows;
 };
 
-// Fungsi untuk mendapatkan notifikasi berdasarkan user ID
-const getNotificationsByUserId = (userId, callback) => {
-  const query = `SELECT * FROM notifications WHERE user_id = ?`;
-  db.query(query, [userId], (err, results) => {
-    if (err) {
-      console.error("Error retrieving notifications by user ID:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
-  });
+const getNotificationsByUserId = async (userId) => {
+  const [rows] = await db.query(
+    "SELECT * FROM notifications WHERE user_id = ?",
+    [userId]
+  );
+  return rows;
 };
 
-// Fungsi untuk memperbarui notifikasi
-const updateNotification = (
+const updateNotification = async (
   notificationId,
   userId,
   complaintId,
   message,
-  status,
-  callback
+  status
 ) => {
-  const query = `UPDATE notifications SET user_id = ?, complaint_id = ?, message = ?, status = ? WHERE notification_id = ?`;
-  db.query(
-    query,
-    [userId, complaintId, message, status, notificationId],
-    (err, results) => {
-      if (err) {
-        console.error("Error updating notification:", err);
-        return callback(err, null);
-      }
-      callback(null, results);
-    }
+  await db.query(
+    "UPDATE notifications SET user_id = ?, complaint_id = ?, message = ?, status = ? WHERE notification_id = ?",
+    [userId, complaintId, message, status, notificationId]
   );
+  return {
+    notification_id: notificationId,
+    userId,
+    complaintId,
+    message,
+    status,
+  };
 };
 
-// Fungsi untuk menghapus notifikasi
-const deleteNotification = (notificationId, callback) => {
-  const query = `DELETE FROM notifications WHERE notification_id = ?`;
-  db.query(query, [notificationId], (err, results) => {
-    if (err) {
-      console.error("Error deleting notification:", err);
-      return callback(err, null);
-    }
-    callback(null, results);
-  });
+const deleteNotification = async (notificationId) => {
+  await db.query("DELETE FROM notifications WHERE notification_id = ?", [
+    notificationId,
+  ]);
+  return { success: true };
 };
 
 module.exports = {
