@@ -1,283 +1,311 @@
-# 🛠️ Final Project: Microservices System with RESTful API
+# Final Project Microservices - Workflow App
 
-## 📁 Folder Structure
+Proyek Final untuk mata kuliah Enterprise Application Integration dengan pendekatan **Microservices Architecture**. Aplikasi ini mengintegrasikan 5 layanan backend berbasis **GraphQL**, serta 1 layanan frontend berbasis **React + Vite**.
 
+## 📦 Layanan
+
+Berikut ini daftar layanan backend yang digunakan dalam Workflow App:
+
+| Layanan             | Port | Deskripsi                                | GraphQL Endpoint                                               |
+| ------------------- | ---- | ---------------------------------------- | -------------------------------------------------------------- |
+| UserService         | 4001 | Mengelola data user                      | [http://localhost:4001/graphql](http://localhost:4001/graphql) |
+| ProductService      | 4002 | Mengelola data produk                    | [http://localhost:4002/graphql](http://localhost:4002/graphql) |
+| ComplaintService    | 4003 | Mengelola data pengaduan terhadap produk | [http://localhost:4003/graphql](http://localhost:4003/graphql) |
+| NotificationService | 4004 | Mengelola notifikasi untuk user          | [http://localhost:4004/graphql](http://localhost:4004/graphql) |
+| OrderService        | 4005 | Mengelola pemesanan produk oleh user     | [http://localhost:4005/graphql](http://localhost:4005/graphql) |
+
+## 🧑‍💻 Teknologi yang Digunakan
+
+### Backend (per layanan):
+
+- Node.js + Express
+- GraphQL (Apollo Server)
+- MySQL (database sudah termasuk dalam image Docker)
+- Sequelize ORM (jika digunakan)
+- Docker & Docker Compose
+
+### Frontend (client):
+
+- React + Vite
+- TypeScript
+- Tailwind CSS
+- Apollo Client
+- SweetAlert2
+
+## 🚀 Langkah Menjalankan Aplikasi
+
+### 1. Siapkan Folder Proyek
+
+Buat folder baru, lalu copy file docker-compose.yaml di sini
+
+```bash
+mkdir workflow-app
+cd workflow-app
+# Lalu copy file docker-compose.yaml ke sini
 ```
-.
-├── client/                   # React + Vite + Tailwind frontend
-├── UserService/             # Service: Users (port 3001)
-├── ProductService/          # Service: Products (port 3002)
-├── ComplaintService/        # Service: Complaints (port 3003)
-├── NotificationService/     # Service: Notifications (port 3004)
-├── OrderService/            # Service: Orders (port 3005)
-├── start/                   # Runner script for all services
-├── db.sql                   # SQL dump file
-├── README.md                # This file
-└── Instruksi Pengerjaan Proyek.pdf
+
+### 2. Jalankan Semua Service
+
+```bash
+docker-compose up --build -d
 ```
+
+## 🧾 Contoh Query & Mutation per Layanan
+
+### 🔹 UserService (`http://localhost:4001/graphql`)
+
+```graphql
+# Get All Users
+query {
+  users {
+    user_id
+    name
+    email
+  }
+}
+
+# Get User by ID
+query {
+  user(id: 1) {
+    user_id
+    name
+    email
+  }
+}
+
+# Add User
+mutation {
+  addUser(input: { name: "Alya", email: "alya@email.com" }) {
+    user_id
+    name
+  }
+}
+
+# Update User
+mutation {
+  updateUser(id: 1, input: { name: "Updated Name" }) {
+    user_id
+    name
+  }
+}
+
+# Delete User
+mutation {
+  deleteUser(id: 1)
+}
+```
+
+### 🔹 ProductService (`http://localhost:4002/graphql`)
+
+```graphql
+query {
+  products {
+    product_id
+    name
+    type
+    location
+    status
+    description
+  }
+}
+
+query {
+  product(id: 1) {
+    product_id
+    name
+  }
+}
+
+mutation {
+  addProduct(
+    input: {
+      name: "Kipas"
+      type: "Elektronik"
+      location: "Rak A1"
+      status: "Ready"
+      description: "Kipas angin meja"
+    }
+  ) {
+    product_id
+  }
+}
+
+mutation {
+  updateProduct(id: 1, input: { name: "Kipas Baru" }) {
+    product_id
+  }
+}
+
+mutation {
+  deleteProduct(id: 1)
+}
+```
+
+### 🔹 ComplaintService (`http://localhost:4003/graphql`)
+
+```graphql
+query {
+  complaints {
+    complaint_id
+    description
+  }
+}
+
+query {
+  complaint(id: 1) {
+    complaint_id
+    description
+  }
+}
+
+query {
+  complaintsByUser(user_id: 1) {
+    complaint_id
+    description
+  }
+}
+
+mutation {
+  addComplaint(
+    input: { user_id: 1, product_id: 1, description: "Barang rusak" }
+  ) {
+    complaint_id
+  }
+}
+
+mutation {
+  updateComplaint(id: 1, input: { description: "Sudah diperbaiki" }) {
+    complaint_id
+  }
+}
+
+mutation {
+  deleteComplaint(id: 1)
+}
+```
+
+### 🔹 NotificationService (`http://localhost:4004/graphql`)
+
+```graphql
+query {
+  getAllNotifications {
+    notification_id
+    message
+  }
+}
+
+query {
+  getNotificationById(id: 1) {
+    notification_id
+    message
+  }
+}
+
+query {
+  getNotificationsByUserId(user_id: 1) {
+    notification_id
+    message
+  }
+}
+
+mutation {
+  addNotification(
+    input: {
+      user_id: 1
+      complaint_id: 1
+      message: "Pengaduan Anda sedang diproses"
+    }
+  ) {
+    notification_id
+  }
+}
+
+mutation {
+  updateNotification(id: 1, input: { message: "Selesai" }) {
+    notification_id
+  }
+}
+
+mutation {
+  deleteNotification(id: 1)
+}
+```
+
+### 🔹 OrderService (`http://localhost:4005/graphql`)
+
+```graphql
+query {
+  orders {
+    order_id
+    request_type
+    status
+  }
+}
+
+query {
+  order(id: 1) {
+    order_id
+    request_type
+    status
+  }
+}
+
+query {
+  ordersByUserId(user_id: 1) {
+    order_id
+    status
+  }
+}
+
+mutation {
+  addOrder(
+    input: {
+      user_id: 1
+      product_id: 1
+      request_type: "permintaan"
+      status: "pending"
+    }
+  ) {
+    order_id
+  }
+}
+
+mutation {
+  updateOrder(id: 1, input: { status: "approved" }) {
+    order_id
+  }
+}
+
+mutation {
+  deleteOrder(id: 1)
+}
+```
+
+## 🐳 Docker Commands Tambahan
+
+### Cek status semua container
+
+```bash
+docker-compose ps
+```
+
+### Melihat logs
+
+```bash
+docker-compose logs -f UserService
+```
+
+### Stop dan hapus semua container
+
+```bash
+docker-compose down -v
+```
+
+## 📋 Catatan Penting
+
+- Semua service GraphQL dapat diuji menggunakan GraphQL Playground
+- Tidak perlu setup manual database — semua sudah diatur dalam Docker image dan `db.sql`
 
 ---
 
-## ⚙️ Installation & Running
-
-### 🔹 Manual Per Service
-
-#### ▶️ UserService
-```bash
-cd UserService
-npm install
-```
-
-#### ▶️ ProductService
-```bash
-cd ProductService
-npm install
-```
-
-#### ▶️ ComplaintService
-```bash
-cd ComplaintService
-npm install
-```
-
-#### ▶️ NotificationService
-```bash
-cd NotificationService
-npm install
-```
-
-#### ▶️ OrderService
-```bash
-cd OrderService
-npm install
-```
-
-### 🔹 Global Runner (After each services been installed, run on this folder)
-```bash
-cd start
-npm install
-node start-services.js
-```
-
-### 🔹 Frontend
-```bash
-cd client
-npm install
-npm run dev
-# Opens at http://localhost:5173
-```
-
----
-
-## 📚 API Documentation with JSON
-
-### ✅ User Service (`http://localhost:3001/users`)
-
-#### `GET /` & `GET /:id`
-_Response:_
-```json
-{
-  "user_id": 1,
-  "name": "Budi",
-  "email": "budi@example.com",
-  "password": "password123"
-}
-```
-
-#### `POST /`
-_Body:_
-```json
-{
-  "name": "Budi",
-  "email": "budi@example.com",
-  "password": "password123"
-}
-```
-_Response:_
-```json
-{
-  "message": "User added successfully",
-  "userId": 13
-}
-```
-
-#### `PUT /:id`
-_Body:_
-```json
-{
-  "name": "Updated Name",
-  "email": "updated@example.com"
-}
-```
-_Response:_
-```json
-{
-  "message": "User updated successfully"
-}
-```
-
-#### `DELETE /:id`
-```json
-{
-  "message": "User deleted successfully"
-}
-```
-
----
-
-### ✅ Product Service (`http://localhost:3002/products`)
-
-#### `POST /`
-_Body:_
-```json
-{
-  "name": "Jalan Raya",
-  "type": "Jalan",
-  "location": "Jakarta",
-  "status": "Rusak",
-  "description": "Jalan banyak berlubang"
-}
-```
-_Response:_
-```json
-{
-  "message": "Product added successfully",
-  "productId": 5
-}
-```
-
-#### `PUT /:id`
-_Body:_
-```json
-{
-  "name": "Updated Name",
-  "type": "Taman",
-  "location": "Bandung",
-  "status": "Baik",
-  "description": "Taman diperbarui"
-}
-```
-_Response:_
-```json
-{
-  "message": "Product updated successfully"
-}
-```
-
----
-
-### ✅ Complaint Service (`http://localhost:3003/complaints`)
-
-#### `POST /`
-_Body:_
-```json
-{
-  "userId": 1,
-  "productId": 2,
-  "complaintText": "Jalan rusak",
-  "status": "Pending"
-}
-```
-_Response:_
-```json
-{
-  "message": "Complaint added successfully",
-  "complaintId": 7
-}
-```
-
-#### `PUT /:id`
-_Body:_
-```json
-{
-  "status": "Resolved"
-}
-```
-_Response:_
-```json
-{
-  "message": "Complaint updated successfully"
-}
-```
-
----
-
-### ✅ Notification Service (`http://localhost:3004/notifications`)
-
-#### `POST /`
-_Body:_
-```json
-{
-  "userId": 1,
-  "complaintId": 2,
-  "message": "Keluhan Anda diproses",
-  "status": "Sent"
-}
-```
-_Response:_
-```json
-{
-  "message": "Notification added successfully",
-  "notificationId": 6
-}
-```
-
-#### `PUT /:id`
-_Body:_
-```json
-{
-  "userId": 1,
-  "complaintId": 2,
-  "message": "Updated message",
-  "status": "Pending"
-}
-```
-_Response:_
-```json
-{
-  "message": "Notification updated successfully"
-}
-```
-
----
-
-### ✅ Order Service (`http://localhost:3005/orders`)
-
-#### `POST /`
-_Body:_
-```json
-{
-  "userId": 1,
-  "productId": 2,
-  "requestType": "Perbaikan Mendesak",
-  "status": "Pending"
-}
-```
-_Response:_
-```json
-{
-  "message": "Order added successfully",
-  "orderId": 6
-}
-```
-
-#### `PUT /:id`
-_Body:_
-```json
-{
-  "userId": 1,
-  "productId": 2,
-  "requestType": "Pemeliharaan",
-  "status": "Resolved"
-}
-```
-_Response:_
-```json
-{
-  "message": "Order updated successfully"
-}
-```
-
----
-
-© 2025 - Final Project Microservices System
+#HidupJokowi
