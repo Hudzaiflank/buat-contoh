@@ -1,4 +1,3 @@
-// src/pages/Orders/OrderForm.tsx
 import { useEffect, useState } from "react";
 import {
   addOrder,
@@ -25,6 +24,8 @@ export default function OrderForm({
 
   const [users, setUsers] = useState([]);
   const [products, setProducts] = useState([]);
+
+  const requestTypes = ["Perbaikan", "Pemeliharaan"]; // ✅ Dropdown options
 
   useEffect(() => {
     getAllUsers().then(setUsers);
@@ -97,14 +98,19 @@ export default function OrderForm({
         ))}
       </select>
 
-      <input
-        type="text"
-        placeholder="Request Type"
+      <select
         value={requestType}
         onChange={(e) => setRequestType(e.target.value)}
         className="border p-2 w-full rounded"
         required
-      />
+      >
+        <option value="">Select Request Type</option>
+        {requestTypes.map((type) => (
+          <option key={type} value={type}>
+            {type}
+          </option>
+        ))}
+      </select>
 
       <select
         value={status}

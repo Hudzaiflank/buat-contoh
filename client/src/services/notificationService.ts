@@ -29,8 +29,8 @@ export const getNotificationById = async (id: number) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        query {
-          getNotificationById(notification_id: ${id}) {
+        query GetNotificationById($id: ID!) {
+          getNotificationById(id: $id) {
             notification_id
             user_id
             complaint_id
@@ -39,6 +39,7 @@ export const getNotificationById = async (id: number) => {
           }
         }
       `,
+      variables: { id },
     }),
   });
 
@@ -57,15 +58,32 @@ export const addNotification = async (data: {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        mutation {
+        mutation AddNotification(
+          $user_id: Int!,
+          $complaint_id: Int!,
+          $message: String!,
+          $status: String!
+        ) {
           addNotification(
-            user_id: ${data.userId},
-            complaint_id: ${data.complaintId},
-            message: "${data.message}",
-            status: "${data.status}"
-          )
+            user_id: $user_id,
+            complaint_id: $complaint_id,
+            message: $message,
+            status: $status
+          ) {
+            notification_id
+            user_id
+            complaint_id
+            message
+            status
+          }
         }
       `,
+      variables: {
+        user_id: data.userId,
+        complaint_id: data.complaintId,
+        message: data.message,
+        status: data.status,
+      },
     }),
   });
 
@@ -75,23 +93,41 @@ export const addNotification = async (data: {
 
 export const updateNotification = async (
   id: number,
-  data: { userId: number; complaintId: number; message: string; status: string }
+  data: {
+    userId: number;
+    complaintId: number;
+    message: string;
+    status: string;
+  }
 ) => {
   const res = await fetch(BASE_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        mutation {
+        mutation UpdateNotification(
+          $id: ID!,
+          $user_id: Int!,
+          $complaint_id: Int!,
+          $message: String!,
+          $status: String!
+        ) {
           updateNotification(
-            notification_id: ${id},
-            user_id: ${data.userId},
-            complaint_id: ${data.complaintId},
-            message: "${data.message}",
-            status: "${data.status}"
+            id: $id,
+            user_id: $user_id,
+            complaint_id: $complaint_id,
+            message: $message,
+            status: $status
           )
         }
       `,
+      variables: {
+        id,
+        user_id: data.userId,
+        complaint_id: data.complaintId,
+        message: data.message,
+        status: data.status,
+      },
     }),
   });
 
@@ -105,10 +141,11 @@ export const deleteNotification = async (id: number) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        mutation {
-          deleteNotification(notification_id: ${id})
+        mutation DeleteNotification($id: ID!) {
+          deleteNotification(id: $id)
         }
       `,
+      variables: { id },
     }),
   });
 

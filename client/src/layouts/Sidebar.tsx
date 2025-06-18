@@ -10,7 +10,7 @@ const Sidebar: React.FC<SidebarProps> = ({ setPage }) => {
 
   return (
     <aside className="w-64 bg-[#20232a] text-white min-h-screen p-4">
-      <h2 className="text-2xl font-bold mb-6">GraphQL Style UI</h2>
+      <h2 className="text-2xl font-bold mb-6">Complaint</h2>
       <nav className="space-y-4">
         {menu.map((item) => (
           <button

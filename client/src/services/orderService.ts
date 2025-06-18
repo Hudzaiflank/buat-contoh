@@ -18,8 +18,8 @@ export const getAllOrders = async () => {
       `,
     }),
   });
+
   const { data } = await res.json();
-  console.log("Orders data received:", data);
   return data.orders;
 };
 
@@ -29,8 +29,8 @@ export const getOrderById = async (id: number) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        query GetOrderById($id: Int!) {
-          order(id: $id) {
+        query GetOrderById($order_id: ID!) {
+          order(order_id: $order_id) {
             order_id
             user_id
             product_id
@@ -39,9 +39,10 @@ export const getOrderById = async (id: number) => {
           }
         }
       `,
-      variables: { id },
+      variables: { order_id: id },
     }),
   });
+
   const { data } = await res.json();
   return data.order;
 };
@@ -57,15 +58,35 @@ export const addOrder = async (data: {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        mutation AddOrder($userId: Int!, $productId: Int!, $requestType: String!, $status: String!) {
-          addOrder(user_id: $userId, product_id: $productId, request_type: $requestType, status: $status) {
+        mutation AddOrder(
+          $user_id: ID!,
+          $product_id: ID!,
+          $request_type: String!,
+          $status: String!
+        ) {
+          addOrder(
+            user_id: $user_id,
+            product_id: $product_id,
+            request_type: $request_type,
+            status: $status
+          ) {
             order_id
+            user_id
+            product_id
+            request_type
+            status
           }
         }
       `,
-      variables: data,
+      variables: {
+        user_id: data.userId,
+        product_id: data.productId,
+        request_type: data.requestType,
+        status: data.status,
+      },
     }),
   });
+
   const { data: result } = await res.json();
   return result.addOrder;
 };
@@ -84,18 +105,38 @@ export const updateOrder = async (
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        mutation UpdateOrder($orderId: Int!, $userId: Int!, $productId: Int!, $requestType: String!, $status: String!) {
-          updateOrder(order_id: $orderId, user_id: $userId, product_id: $productId, request_type: $requestType, status: $status) {
-            message
+        mutation UpdateOrder(
+          $order_id: ID!,
+          $user_id: ID!,
+          $product_id: ID!,
+          $request_type: String!,
+          $status: String!
+        ) {
+          updateOrder(
+            order_id: $order_id,
+            user_id: $user_id,
+            product_id: $product_id,
+            request_type: $request_type,
+            status: $status
+          ) {
+            order_id
+            user_id
+            product_id
+            request_type
+            status
           }
         }
       `,
       variables: {
-        orderId: id,
-        ...data,
+        order_id: id,
+        user_id: data.userId,
+        product_id: data.productId,
+        request_type: data.requestType,
+        status: data.status,
       },
     }),
   });
+
   const { data: result } = await res.json();
   return result.updateOrder;
 };
@@ -106,15 +147,14 @@ export const deleteOrder = async (id: number) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       query: `
-        mutation DeleteOrder($id: Int!) {
-          deleteOrder(order_id: $id) {
-            message
-          }
+        mutation DeleteOrder($order_id: ID!) {
+          deleteOrder(order_id: $order_id)
         }
       `,
-      variables: { id },
+      variables: { order_id: id },
     }),
   });
+
   const { data: result } = await res.json();
   return result.deleteOrder;
 };
